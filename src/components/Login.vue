@@ -17,7 +17,8 @@
         </el-form-item>
         <!-- 按钮区域 -->
         <el-form-item class="btns">
-          <el-button @click="studentLogin">登录</el-button>
+          <el-button @click="faceCheck">人脸</el-button>
+          <el-button @click="userLogin">登录</el-button>
           <el-button type="primary" @click="dialogVisible = true">注册</el-button>
         </el-form-item>
       </el-form>
@@ -91,36 +92,20 @@ export default {
     }
   },
   methods: {
-    // 学生登录
-    studentLogin () {
+    // 用户登录
+    userLogin () {
       this.$refs.loginFormRef.validate(async valid => {
         if (!valid) return
-        this.$http.get(`/user?phonenumber=${this.loginForm.phonenumber}&password=${this.loginForm.password}`)
+        console.log(this.loginForm)
+        this.$http.post('login/signIn/', this.loginForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
           .then(response => {
-            // console.log(response)
-            this.$message.success('登录成功')
-            window.sessionStorage.setItem('token', response.data.phonenumber)
-            this.$router.push('/home')
+            console.log(response)
+            this.$message.success('账号密码正确，请验证人脸')
+            // window.sessionStorage.setItem('token', response.data.phonenumber)
+            // this.$router.push('/home')
           })
           .catch(error => {
             this.$message('账号或密码错误')
-            console.log(error)
-          })
-      })
-    },
-    // 管理员登录
-    adminLogin () {
-      this.$refs.loginFormRef.validate(valid => {
-        if (!valid) return
-        this.$http.get(`/admin?phonenumber=${this.loginForm.phonenumber}&password=${this.loginForm.password}`)
-          .then(response => {
-            // console.log(response)
-            this.$message.success('登录成功')
-            window.sessionStorage.setItem('token', response.data.phonenumber)
-            this.$router.push('/console')
-          })
-          .catch(error => {
-            this.$message.error('账号或密码错误')
             console.log(error)
           })
       })
@@ -148,6 +133,9 @@ export default {
             console.log(error)
           })
       })
+    },
+    faceCheck () {
+      window.open('videoCap.html')
     }
   }
 }

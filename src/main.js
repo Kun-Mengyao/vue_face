@@ -7,6 +7,11 @@ import Home from './components/Home'
 import Login from './components/Login'
 import './assets/css/global.css'
 import axios from 'axios'
+import './assets/css/video.css'
+import VideoPlayer from 'vue-video-player'
+require('video.js/dist/video-js.css')
+require('vue-video-player/src/custom-theme.css')
+Vue.use(VideoPlayer)
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000/'
 Vue.prototype.$http = axios
