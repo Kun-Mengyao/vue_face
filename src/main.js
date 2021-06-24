@@ -1,9 +1,34 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './router'
-import './plugins/element.js'
+import VueRouter from 'vue-router'
+import 'element-ui/lib/theme-chalk/index.css'
+import ElementUI from 'element-ui'
+import Home from './components/Home'
+import Login from './components/Login'
+import './assets/css/global.css'
+import axios from 'axios'
+
+axios.defaults.baseURL = 'http://127.0.0.1:8000/'
+Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
+
+Vue.use(ElementUI)
+Vue.use(VueRouter)
+
+const router = new VueRouter({
+  mode: 'history',
+  routes: [{
+    path: '/login',
+    component: Login
+  }, {
+    path: '/home',
+    component: Home
+  }, {
+    path: '*',
+    component: Home
+  }]
+})
 
 new Vue({
   router,
