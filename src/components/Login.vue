@@ -51,7 +51,7 @@
       </span>
     </el-dialog>
   </div>
-</template>""
+</template>
 
 <script>
 export default {
@@ -73,6 +73,7 @@ export default {
         ]
       },
       // 是否显示对话框
+      faceVisable: false,
       dialogVisible: false,
       dialogForm: {
         phonenumber: '',
@@ -165,6 +166,9 @@ export default {
             console.log(error)
           })
       })
+    },
+    faceClose () {
+      this.faceVisable = false
     },
     faceCheck () {
       window.open('videoCap.html')
