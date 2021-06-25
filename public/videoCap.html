@@ -27,8 +27,8 @@
             <button id="save-recording" disabled>保存</button>
             <button href="javascript:void(0)" onclick="send()">发送</button>
         </section>
- </article>
-<script>
+    </article>
+    <script>
             var mediaStream;
             var recorderFile;
             var stopRecordCallback;
@@ -189,14 +189,28 @@ function send(){
         type: 'video/mp4'
     });
     var data = new FormData();
-    data.append("username", "test");
+    data.append("phonenumber", "");
     data.append("userfile", file);
-
+    
     var req = new XMLHttpRequest();
     req.open("POST", "http://127.0.0.1:8000/login/faceCheck/");
     req.send(data);
+    req.onreadystatechange = zswFun;
 
     // this.$http.post('login/register/', data, { headers: { enctype="multipart/form-data" } })
+
+}
+
+//回调函数    
+function zswFun(){    
+    if(xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200){    
+        var b = xmlHttpRequest.responseText;    
+        if(b == "true"){    
+            alert("登录成功！");    
+        }else{    
+            alert("登录失败！");    
+        }           
+    }    
 }
 
 </script>

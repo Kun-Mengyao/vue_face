@@ -35,9 +35,15 @@
         <el-form-item label="姓名" prop="name">
           <el-input v-model="dialogForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="照片" prop="photo">
-          <el-input v-model="dialogForm.photo"></el-input>
-        </el-form-item>
+        <el-upload
+          action
+          list-type="picture-card"
+          :on-preview="handlePictureCardPreview"
+          ref="upload"
+          :auto-upload="false"
+          :on-change="fileChange">
+          <i class="el-icon-plus"></i>
+        </el-upload>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogSure">确定</el-button>
@@ -71,8 +77,7 @@ export default {
       dialogForm: {
         phonenumber: '',
         password: '',
-        name: '',
-        photo: ''
+        name: ''
       },
       // 注册的验证规则
       dialogFormRules: {
@@ -92,6 +97,27 @@ export default {
     }
   },
   methods: {
+    fileChange (file) {
+      const typeArr = ['image/png', 'image/gif', 'image/jpeg', 'image/jpg']
+      const isJPG = typeArr.indexOf(file.raw.type) !== -1
+      // image/png, image/jpeg, image/gif, image/jpg
+      const isLt3M = file.size / 1024 / 1024 < 3
+
+      if (!isJPG) {
+        this.$message.error('只能是图片!')
+        this.$refs.upload.clearFiles()
+        this.files = null
+        return
+      }
+      if (!isLt3M) {
+        this.$message.error('上传图片大小不能超过 3MB!')
+        this.$refs.upload.clearFiles()
+        this.files = null
+        return
+      }
+      this.files = file.raw
+      console.log(file)
+    },
     // 用户登录
     userLogin () {
       this.$refs.loginFormRef.validate(async valid => {
@@ -122,8 +148,14 @@ export default {
     // 点击对话框的确认
     dialogSure () {
       this.$refs.dialogFormRef.validate(valid => {
+        const formData = new FormData()
+        Object.keys(this.dialogForm).forEach((ele) => {
+          formData.append(ele, this.dialogForm[ele])
+        })
+        formData.append('file', this.files)
         if (!valid) return
-        this.$http.post('login/register/', this.dialogForm, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+        console.log(formData)
+        this.$http.post('login/register/', formData, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
           .then(response => {
             this.$message.success('注册成功')
             this.dialogClose()
@@ -142,6 +174,29 @@ export default {
 </script>
 
 <style lang="less" scoped>
+ .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 // 背景
 .login_container {
   background-color:#203ddf4d;
